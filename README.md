@@ -1,1 +1,1 @@
-# m4p-solana-server
+# mvp-solana-server
