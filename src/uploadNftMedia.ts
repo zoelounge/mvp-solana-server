@@ -5,7 +5,9 @@ import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
 import { createGenericFile, createSignerFromKeypair, signerIdentity } from "@metaplex-foundation/umi";
 import { Connection, Keypair, LAMPORTS_PER_SOL } from "@solana/web3.js";
 
-import fs from 'node:fs/promises';
+import fs_p from 'node:fs/promises';
+var fs = require('fs');
+
 var path = require('path');
 
 // Utilizziamo IRYS per l'upload del file nft con "npm i metaplex-foundation/umi-uploader-irys"
@@ -48,10 +50,14 @@ async function uploadMediaForNft(image_media_name: string, nft_name: string): Pr
         let balanceUMI = await connection.getBalance(umiPublickKey);
         console.log(`balanceUMI di myKeypairSigner is:  ${balanceUMI / LAMPORTS_PER_SOL} SOL`);
 
+        var dir = './uploads';
 
+        if (!fs.fs.existsSync(dir)) {
+            fs.mkdirSync(dir);
+        }
         //var filePath = path.join(__dirname, '../asset/LaureaMasterZSol.pdf');
         var filePath = path.join(__dirname, `./uploads/${image_media_name}`);
-        const media = await fs.readFile(filePath, /*{ encoding: 'utf8' }*/);
+        const media = await fs_p.readFile(filePath, /*{ encoding: 'utf8' }*/);
 
         // prendiamo il nostro file image che dovrebbe rapprenstare il nostro NFT
         //const media = await readFile("./nft/nft-scooter.png");
