@@ -52,9 +52,14 @@ async function uploadMediaForNft(image_media_name: string, nft_name: string): Pr
 
         var dir = './uploads';
 
-        if (!fs.fs.existsSync(dir)) {
+        if (!fs.existsSync(dir)) {
+            console.log(`folder upload nnon esiste la creo`);
             fs.mkdirSync(dir);
+            console.log(`folder upload creata`);
         }
+
+        console.log(`folder già esistente?`);
+
         //var filePath = path.join(__dirname, '../asset/LaureaMasterZSol.pdf');
         var filePath = path.join(__dirname, `./uploads/${image_media_name}`);
         const media = await fs_p.readFile(filePath, /*{ encoding: 'utf8' }*/);
