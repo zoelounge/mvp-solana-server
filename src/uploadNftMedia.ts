@@ -6,9 +6,8 @@ import { createGenericFile, createSignerFromKeypair, signerIdentity } from "@met
 import { Connection, Keypair, LAMPORTS_PER_SOL } from "@solana/web3.js";
 
 import fs_p from 'node:fs/promises';
-var fs = require('fs');
-
-var path = require('path');
+let fs = require('fs');
+let path = require('path');
 
 // Utilizziamo IRYS per l'upload del file nft con "npm i metaplex-foundation/umi-uploader-irys"
 import { createIrysUploader, irysUploader } from "@metaplex-foundation/umi-uploader-irys";
@@ -44,24 +43,20 @@ async function uploadMediaForNft(image_media_name: string, nft_name: string): Pr
     try {
         // test keypairUMI
         const connection = new Connection(rpc_url!, "finalized");
-        console.log(" testRPC: onnnection.rpcEndpoint = ", connection.rpcEndpoint);
+        console.log(" uploadMediaForNft: onnnection.rpcEndpoint = ", connection.rpcEndpoint);
         const umiPublickKey = toWeb3JsPublicKey(myKeypairSigner.publicKey)
 
         let balanceUMI = await connection.getBalance(umiPublickKey);
         console.log(`balanceUMI di myKeypairSigner is:  ${balanceUMI / LAMPORTS_PER_SOL} SOL`);
 
-        var dir = './uploads';
-
-        if (!fs.existsSync(dir)) {
-            console.log(`folder upload nnon esiste la creo`);
-            fs.mkdirSync(dir);
-            console.log(`folder upload creata`);
-        }
-
-        console.log(`folder già esistente?`);
 
         //var filePath = path.join(__dirname, '../asset/LaureaMasterZSol.pdf');
-        var filePath = path.join(__dirname, `./uploads/${image_media_name}`);
+        //var filePath = path.join(__dirname, `./uploads/${image_media_name}`);
+        console.log(`uploadMediaForNft: folder __dirname:`, __dirname);
+
+        var filePath = path.join(__dirname, `../uploads/${image_media_name}`);
+        console.log(`uploadMediaForNft: folder filePath:`, filePath);
+
         const media = await fs_p.readFile(filePath, /*{ encoding: 'utf8' }*/);
 
         // prendiamo il nostro file image che dovrebbe rapprenstare il nostro NFT

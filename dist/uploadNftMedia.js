@@ -19,7 +19,8 @@ const umi_bundle_defaults_1 = require("@metaplex-foundation/umi-bundle-defaults"
 const umi_1 = require("@metaplex-foundation/umi");
 const web3_js_1 = require("@solana/web3.js");
 const promises_1 = __importDefault(require("node:fs/promises"));
-var path = require('path');
+let fs = require('fs');
+let path = require('path');
 // Utilizziamo IRYS per l'upload del file nft con "npm i metaplex-foundation/umi-uploader-irys"
 const umi_uploader_irys_1 = require("@metaplex-foundation/umi-uploader-irys");
 const key_file_json_1 = __importDefault(require("./key-file.json")); // serve per la fase di test altrimenti verremo limitati
@@ -48,12 +49,15 @@ function uploadMediaForNft(image_media_name, nft_name) {
         try {
             // test keypairUMI
             const connection = new web3_js_1.Connection(rpc_url, "finalized");
-            console.log(" testRPC: onnnection.rpcEndpoint = ", connection.rpcEndpoint);
+            console.log(" uploadMediaForNft: onnnection.rpcEndpoint = ", connection.rpcEndpoint);
             const umiPublickKey = (0, umi_web3js_adapters_1.toWeb3JsPublicKey)(myKeypairSigner.publicKey);
             let balanceUMI = yield connection.getBalance(umiPublickKey);
             console.log(`balanceUMI di myKeypairSigner is:  ${balanceUMI / web3_js_1.LAMPORTS_PER_SOL} SOL`);
             //var filePath = path.join(__dirname, '../asset/LaureaMasterZSol.pdf');
-            var filePath = path.join(__dirname, `./uploads/${image_media_name}`);
+            //var filePath = path.join(__dirname, `./uploads/${image_media_name}`);
+            console.log(`uploadMediaForNft: folder __dirname:`, __dirname);
+            var filePath = path.join(__dirname, `../uploads/${image_media_name}`);
+            console.log(`uploadMediaForNft: folder filePath:`, filePath);
             const media = yield promises_1.default.readFile(filePath);
             // prendiamo il nostro file image che dovrebbe rapprenstare il nostro NFT
             //const media = await readFile("./nft/nft-scooter.png");

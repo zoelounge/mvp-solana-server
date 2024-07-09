@@ -14,6 +14,7 @@ import mintRouteNFTAction from "./mintRouteNFT";
 import { ObjResultMintAndTRansfer } from "./mintNFT";
 import keygenAndAirdrop from "./keygen_and_airdrop";
 import dotenv from "dotenv";
+var fs = require('fs');
 
 
 // chiama una funzione esportata
@@ -24,13 +25,20 @@ export default function (app: Express) {
     // Secret key per JWT da mettere dentro .env
     //const SECRET_KEY = process.env.SECRET_KEY;
     const SECRET_KEY = "zoelounge";
+    //var dir = './tmp';
 
 
     // Configurazione di multer per l'upload dei file
     const storage = multer.diskStorage({
 
+        // destination: function (req, file, cb) {
+        //     cb(null, 'src/uploads/');
+        // },
+        // destination: function (req, file, cb) {
+        //     cb(null, dir);
+        // },
         destination: function (req, file, cb) {
-            cb(null, 'src/uploads/');
+            cb(null, 'uploads/');
         },
         filename: function (req, file, cb) {
             cb(null, Date.now() + "-" + file.originalname)
@@ -51,11 +59,40 @@ export default function (app: Express) {
     };
 
     const upload = multer({ storage: storage });
+    const uploader = multer({ dest: "uploads/" });
 
     // const upload = multer({
     //     storage: storage
     //     //fileFilter: fileFilter
     // });
+
+
+    // Route per l'upload dei file: ancora da provare test con uploadr invece che con upload.single
+    app.post('/upload', authenticateToken, uploader.single('recfile'), (req: Request, res: Response) => {
+        console.log("/upload: called: ok ");
+        console.log(`/upload: folder __dirname:`, __dirname);
+
+        // if (!fs.existsSync(dir)) {
+        //     console.log(`folder upload non esiste la creo`);
+        //     fs.mkdirSync(dir);
+        //     console.log(`folder upload creata`);
+        // } else {
+        //     console.log(`folder upload esiste`);
+        // }
+        // console.log(`/upload: folder __dirname:`, __dirname);
+
+        if (!req.file) {
+            return res.status(400).send({ status: 400, message: 'Please upload a file', filePath: "", filename: "" });
+        }
+        const filePath = req.file.path;
+        const filename = req.file.filename;
+        console.log("/upload: filePath:", filePath);
+        console.log("/upload: filename:", filename);
+
+        // TODO: Integrate with Metaplex IrysUploader
+
+        res.status(200).send({ status: 200, message: 'File uploaded successfully', filePath: filePath, filename: filename });
+    });
 
 
     app.get("/", authenticateToken, (req: Request, res: Response) => {
@@ -86,22 +123,6 @@ export default function (app: Express) {
     });
 
 
-    // Route per l'upload dei file: ancora da provare
-    app.post('/upload', authenticateToken, upload.single('recfile'), (req: Request, res: Response) => {
-        console.log("/upload: called");
-
-        if (!req.file) {
-            return res.status(400).send({ status: 400, message: 'Please upload a file', filePath: "", filename: "" });
-        }
-        const filePath = req.file.path;
-        const filename = req.file.filename;
-        console.log("/upload: filePath:", filePath);
-        console.log("/upload: filename:", filename);
-
-        // TODO: Integrate with Metaplex IrysUploader
-
-        res.status(200).send({ status: 200, message: 'File uploaded successfully', filePath: filePath, filename: filename });
-    });
 
 
     app.post("/mintRouteNFT", authToken, async (req: Request, res: Response) => {
